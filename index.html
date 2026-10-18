@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Petualangan Matematika - Kelas 5 & 6</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
+    body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 16px;
+    }
+    .container {
+        background: white;
+        border-radius: 32px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        padding: 28px 24px;
+        max-width: 900px;
+        width: 100%;
+        text-align: center;
+    }
+    h1 { font-size: 1.9rem; color: #2d3748; margin-bottom: 6px; }
+    .subhead { color: #4a5568; margin-bottom: 20px; font-size: 0.95rem; }
+
+    /* Tab Navigasi */
+    .tabs {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+    }
+    .tab-btn {
+        border: none;
+        background: #e2e8f0;
+        color: #2d3748;
+        padding: 10px 20px;
+        border-radius: 20px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 3px 0 #cbd5e0;
+    }
+    .tab-btn.active { background: #4299e1; color: white; box-shadow: 0 3px 0 #2b6cb0; }
+    .tab-btn:hover { transform: translateY(-1px); }
+
+    /* Section */
+    .section { display: none; }
+    .section.active { display: block; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* === MATERI === */
+    .grade-selector {
+        display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;
+    }
+    .grade-btn {
+        border: none; background: #edf2f7; color: #2d3748; padding: 10px 24px;
+        border-radius: 20px; font-size: 1rem; font-weight: bold; cursor: pointer;
+        transition: all 0.2s; box-shadow: 0 3px 0 #cbd5e0;
+    }
+    .grade-btn.active { background: #48bb78; color: white; box-shadow: 0 3px 0 #2f855a; }
+
+    .bab-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+    .bab-card {
+        background: #f7fafc;
+        border-left: 5px solid #4299e1;
+        border-radius: 12px;
+        padding: 14px;
+        text-align: left;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .bab-card:hover { background: #ebf8ff; transform: translateY(-2px); }
+    .bab-card .bab-title { font-weight: bold; color: #2b6cb0; font-size: 0.95rem; margin-bottom: 4px; }
+    .bab-card .bab-desc { font-size: 0.82rem; color: #4a5568; line-height: 1.3; }
+
+    .materi-detail {
+        background: #ebf8ff;
+        border-radius: 16px;
+        padding: 20px;
+        text-align: left;
+        margin-top: 16px;
+        display: none;
+        border: 2px solid #bee3f8;
+    }
+    .materi-detail.show { display: block; animation: fadeIn 0.3s ease; }
+    .materi-detail h3 { color: #2b6cb0; margin-bottom: 10px; font-size: 1.1rem; }
+    .materi-detail ul { padding-left: 22px; }
+    .materi-detail li { margin-bottom: 8px; color: #2d3748; font-size: 0.92rem; line-height: 1.5; }
+    .materi-detail .kesimpulan {
+        background: #c6f6d5;
+        border-left: 4px solid #38a169;
+        padding: 10px 14px;
+        border-radius: 8px;
+        margin-top: 12px;
+        font-size: 0.88rem;
+        color: #22543d;
+    }
+
+    /* === KUIS === */
+    .score { background: #edf2f7; border-radius: 40px; padding: 8px 20px; display: inline-block;
+        font-weight: bold; color: #2b6cb0; margin-bottom: 20px; font-size: 1.1rem; }
+    .operation-selector { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .op-btn {
+        border: none; background: #e2e8f0; color: #2d3748; font-size: 1.1rem; font-weight: bold;
+        width: 55px; height: 55px; border-radius: 18px; cursor: pointer; transition: all 0.2s;
+        box-shadow: 0 4px 0 #cbd5e0;
+    }
+    .op-btn.active { background: #4299e1; color: white; box-shadow: 0 4px 0 #2b6cb0; transform: translateY(-2px); }
+    .question-box {
+        background: #2d3748; color: white; border-radius: 24px; padding: 28px 20px;
+        margin-bottom: 20px; font-size: 2.6rem; font-weight: bold; letter-spacing: 4px;
+        box-shadow: inset 0 -6px 0 #1a202c;
+    }
+    .answer-area { display: flex; justify-content: center; gap: 12px; margin-bottom: 14px; }
+    .answer-area input {
+        width: 130px; padding: 12px; font-size: 1.7rem; text-align: center;
+        border: 3px solid #cbd5e0; border-radius: 20px; outline: none; transition: border 0.2s;
+    }
+    .answer-area input:focus { border-color: #4299e1; }
+    .check-btn {
+        background: #48bb78; border: none; color: white; font-size: 1.3rem; font-weight: bold;
+        padding: 0 24px; border-radius: 20px; cursor: pointer; box-shadow: 0 4px 0 #2f855a;
+        transition: all 0.1s;
+    }
+    .check-btn:active { transform: translateY(4px); box-shadow: none; }
+    .check-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .feedback { font-size: 1.2rem; font-weight: bold; min-height: 36px; margin-bottom: 14px; }
+    .feedback.correct { color: #38a169; }
+    .feedback.wrong { color: #e53e3e; }
+    .next-btn {
+        background: #ed8936; border: none; color: white; font-size: 1.1rem; font-weight: bold;
+        padding: 12px 28px; border-radius: 20px; cursor: pointer; box-shadow: 0 4px 0 #c05621;
+        transition: all 0.1s; margin-top: 6px;
+    }
+    .next-btn:active { transform: translateY(4px); box-shadow: none; }
+    .next-btn:disabled { opacity: 0.5; transform: none; cursor: not-allowed; }
+
+    @media (max-width: 480px) {
+        h1 { font-size: 1.4rem; }
+        .question-box { font-size: 2rem; padding: 20px 10px; }
+        .answer-area input { width: 90px; font-size: 1.4rem; }
+        .check-btn { font-size: 1rem; padding: 0 16px; }
+        .bab-list { grid-template-columns: 1fr; }
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>🧮 Petualangan Matematika</h1>
+    <p class="subhead">Media Belajar & Latihan Kelas 5 & 6 SD</p>
+
+    <!-- Tab Navigasi -->
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="materi">📖 Materi</button>
+        <button class="tab-btn" data-tab="kuis">✏️ Latihan Soal</button>
+    </div>
+
+    <!-- ============ SECTION: MATERI ============ -->
+    <div class="section active" id="section-materi">
+        <div class="grade-selector">
+            <button class="grade-btn active" data-grade="5">Kelas 5</button>
+            <button class="grade-btn" data-grade="6">Kelas 6</button>
+        </div>
+
+        <div class="bab-list" id="babList"></div>
+        <div class="materi-detail" id="materiDetail"></div>
+    </div>
+
+    <!-- ============ SECTION: KUIS ============ -->
+    <div class="section" id="section-kuis">
+        <div class="score" id="scoreDisplay">Skor: 0</div>
+
+        <div class="operation-selector">
+            <button class="op-btn active" data-op="+">+</button>
+            <button class="op-btn" data-op="-">−</button>
+            <button class="op-btn" data-op="×">×</button>
+            <button class="op-btn" data-op="÷">÷</button>
+        </div>
+
+        <div class="question-box" id="questionText">3 + 4</div>
+
+        <div class="answer-area">
+            <input type="number" id="answerInput" placeholder="?" inputmode="numeric">
+            <button class="check-btn" id="checkBtn">Cek</button>
+        </div>
+
+        <div class="feedback" id="feedbackMsg"></div>
+        <button class="next-btn" id="nextBtn" disabled>Soal Baru ➡️</button>
+    </div>
+</div>
+
+<script>
+/* =========================================================
+   DATA MATERI KELAS 5 & KELAS 6
+   ========================================================= */
+const materiData = {
+    "5": [
+        {
+            title: "Bab 1: Bilangan Cacah Sampai 100.000",
+            short: "Membaca, menulis, nilai tempat, membandingkan, dan operasi hitung bilangan cacah.",
+            poin: [
+                "Membaca dan menulis bilangan cacah sampai 100.000.",
+                "Menentukan nilai tempat (satuan, puluhan, ratusan, ribuan, puluh ribuan).",
+                "Komposisi dan dekomposisi bilangan (contoh: 45.678 = 40.000 + 5.000 + 600 + 70 + 8).",
+                "Membandingkan dan mengurutkan bilangan cacah menggunakan simbol (<, >, =).",
+                "Operasi hitung bilangan cacah (penjumlahan, pengurangan, perkalian, pembagian)."
+            ],
+            kesimpulan: "Bilangan cacah memiliki nilai tempat yang menentukan besar nilainya. Memahami nilai tempat membantu kita membandingkan, mengurutkan, dan menghitung dengan benar."
+        },
+        {
+            title: "Bab 2: KPK dan FPB",
+            short: "Kelipatan Persekutuan Terkecil & Faktor Persekutuan Terbesar.",
+            poin: [
+                "Konsep kelipatan dan faktor suatu bilangan.",
+                "Kelipatan persekutuan dan faktor persekutuan.",
+                "Bilangan prima dan faktor prima.",
+                "Menentukan nilai KPK dan FPB (menggunakan pohon faktor atau tabel)."
+            ],
+            kesimpulan: "FPB dipakai untuk membagi rata sejumlah benda ke beberapa kelompok. KPK dipakai untuk menentukan waktu dua kejadian bertemu kembali."
+        },
+        {
+            title: "Bab 3: Bilangan Pecahan",
+            short: "Konsep pecahan, membandingkan, mengurutkan, penjumlahan, pengurangan, dan hubungan dengan desimal & persen.",
+            poin: [
+                "Konsep pecahan (pembilang dan penyebut).",
+                "Membandingkan dan mengurutkan pecahan.",
+                "Penjumlahan dan pengurangan bilangan pecahan.",
+                "Hubungan antara pecahan, desimal, dan persen (contoh: 1/2 = 0,5 = 50%)."
+            ],
+            kesimpulan: "Pecahan menyatakan bagian dari keseluruhan. Dengan memahami hubungan pecahan–desimal–persen, kita dapat menyajikan data dalam berbagai bentuk."
+        },
+        {
+            title: "Bab 4: Keliling Bangun Datar",
+            short: "Menghitung keliling segitiga, persegi, persegi panjang, dan segi empat lainnya.",
+            poin: [
+                "Pengertian keliling bangun datar (jumlah panjang semua sisi).",
+                "Menghitung keliling segitiga.",
+                "Menghitung keliling persegi dan persegi panjang.",
+                "Menghitung keliling segi empat lainnya (jajar genjang, trapesium, belah ketupat, layang-layang)."
+            ],
+            kesimpulan: "Keliling adalah total panjang sisi-sisi bangun datar. Setiap bangun memiliki rumus keliling yang berbeda sesuai ciri sisinya."
+        },
+        {
+            title: "Bab 5: Luas Daerah Bangun Datar",
+            short: "Konsep luas dengan persegi satuan dan rumus luas berbagai bangun datar.",
+            poin: [
+                "Konsep luas daerah bangun datar (satuan petak atau persegi satuan).",
+                "Menghitung luas persegi dan persegi panjang.",
+                "Menghitung luas segitiga.",
+                "Menghitung luas jajar genjang, trapesium, dan layang-layang."
+            ],
+            kesimpulan: "Luas menunjukkan banyaknya satuan persegi yang menutupi bangun datar. Rumus luas setiap bangun diturunkan dari unsur panjang, lebar, alas, atau tinggi."
+        },
+        {
+            title: "Bab 6: Sudut",
+            short: "Pengertian sudut, jenis-jenis sudut, dan mengukur sudut dengan busur derajat.",
+            poin: [
+                "Pengertian sudut dan komponennya (titik sudut, kaki sudut).",
+                "Mengenal jenis sudut: lancip, siku-siku, tumpul, lurus.",
+                "Mengukur besar sudut menggunakan busur derajat.",
+                "Membandingkan besar dua sudut."
+            ],
+            kesimpulan: "Sudut terbentuk dari dua sinar yang bertemu di satu titik. Besar sudut diukur dalam derajat, dan jenisnya ditentukan oleh besar sudut tersebut."
+        },
+        {
+            title: "Bab 7: Membandingkan Ciri-Ciri Bangun Datar",
+            short: "Ciri-ciri segitiga, segi empat, kesebangunan, dan simetri sederhana.",
+            poin: [
+                "Mengidentifikasi dan membandingkan ciri-ciri berbagai jenis segitiga (sama kaki, sama sisi, sembarang, siku-siku).",
+                "Membandingkan ciri-ciri bangun segi empat (persegi, persegi panjang, jajar genjang, belah ketupat, trapesium, layang-layang).",
+                "Kesebangunan dan simetri sederhana."
+            ],
+            kesimpulan: "Setiap bangun datar memiliki ciri khas pada sisi dan sudutnya. Memahami ciri ini membantu mengklasifikasikan dan mengenali bangun datar dengan tepat."
+        },
+        {
+            title: "Bab 8: Data",
+            short: "Mengumpulkan dan menyajikan data dalam piktogram dan diagram batang.",
+            poin: [
+                "Teknik mengumpulkan dan menyajikan data.",
+                "Membaca dan membuat piktogram (piktograf).",
+                "Membuat dan membaca diagram batang (vertikal, horizontal, atau ganda)."
+            ],
+            kesimpulan: "Data dapat disajikan dengan piktogram atau diagram batang agar lebih mudah dibaca. Penyajian yang tepat memudahkan pengambilan kesimpulan."
+        }
+    ],
+    "6": [
+        {
+            title: "Bab 1: Bilangan Bulat dan Operasi Hitung Campuran",
+            short: "Bilangan bulat positif & negatif serta aturan operasi hitung campuran.",
+            poin: [
+                "Mengenal bilangan bulat positif dan negatif.",
+                "Operasi penjumlahan, pengurangan, perkalian, dan pembagian bilangan bulat.",
+                "Aturan pengerjaan operasi hitung campuran (kurung, kali/bagi, tambah/kurang)."
+            ],
+            kesimpulan: "Bilangan bulat memperluas pemahaman angka ke arah negatif dan positif. Aturan tanda sangat menentukan hasil akhir (+ dengan -, atau - dengan -)."
+        },
+        {
+            title: "Bab 2: FPB dan KPK dengan Faktorisasi Prima",
+            short: "Menentukan FPB & KPK dengan pohon faktor serta aplikasinya.",
+            poin: [
+                "Menentukan Faktor Persekutuan Terbesar (FPB) menggunakan pohon faktor / faktorisasi prima.",
+                "Menentukan Kelipatan Persekutuan Terkecil (KPK) menggunakan faktorisasi prima.",
+                "Aplikasi FPB dan KPK dalam pemecahan masalah sehari-hari."
+            ],
+            kesimpulan: "FPB digunakan untuk membagi jumlah benda secara rata ke beberapa tempat. KPK digunakan untuk menentukan waktu atau kejadian yang akan terjadi bersamaan lagi."
+        },
+        {
+            title: "Bab 3: Pangkat Tiga dan Akar Pangkat Tiga",
+            short: "Bilangan kubik, menghitung pangkat tiga, dan menarik akar pangkat tiga.",
+            poin: [
+                "Mengenal bilangan kubik (1³, 2³, 3³, …).",
+                "Cara menghitung hasil pangkat tiga.",
+                "Menarik akar pangkat tiga (∛…) dari suatu bilangan."
+            ],
+            kesimpulan: "Pangkat dan akar pangkat tiga adalah operasi kebalikan (invers) yang menjadi fondasi untuk menghitung volume bangun ruang seperti kubus."
+        },
+        {
+            title: "Bab 4: Debit, Volume, dan Waktu",
+            short: "Hubungan satuan volume, waktu, dan rumus debit D = V/t.",
+            poin: [
+                "Hubungan antar-satuan volume.",
+                "Satuan waktu (abad, windu, lustrum, jam, menit, detik).",
+                "Rumus menghitung debit: D = V / t (Debit = Volume ÷ Waktu)."
+            ],
+            kesimpulan: "Kecepatan aliran zat cair ditentukan oleh seberapa besar volume yang mengalir dalam satuan waktu tertentu."
+        },
+        {
+            title: "Bab 5: Luas Bangun Datar dan Volume Bangun Ruang",
+            short: "Luas gabungan bangun datar dan volume kubus, balok, prisma, tabung.",
+            poin: [
+                "Menghitung luas gabungan bangun datar (persegi, persegi panjang, segitiga, trapesium, lingkaran, dll.).",
+                "Menghitung volume bangun ruang (kubus, balok, prisma segitiga, tabung)."
+            ],
+            kesimpulan: "Setiap bentuk geometri memiliki rumus baku luas atau volume yang diturunkan dari unsur panjang, lebar, tinggi, atau jari-jari."
+        },
+        {
+            title: "Bab 6: Pecahan, Perbandingan, dan Skala",
+            short: "Operasi pecahan, perbandingan senilai, dan skala peta.",
+            poin: [
+                "Operasi hitung pecahan biasa, campuran, desimal, dan persen.",
+                "Menyederhanakan pecahan.",
+                "Perbandingan senilai / rasio.",
+                "Menghitung skala pada peta: Skala = Jarak Peta ÷ Jarak Sebenarnya."
+            ],
+            kesimpulan: "Pecahan dan skala membantu kita menyatakan bagian dari keseluruhan serta memperkecil ukuran objek nyata agar bisa digambar secara proporsional."
+        },
+        {
+            title: "Bab 7: Sistem Koordinat Kartesius",
+            short: "Sumbu X dan Y serta menentukan letak titik (X, Y).",
+            poin: [
+                "Memahami sumbu mendatar (sumbu X / absis).",
+                "Memahami sumbu tegak (sumbu Y / ordinat).",
+                "Menentukan letak suatu titik atau benda dalam bidang koordinat (X, Y)."
+            ],
+            kesimpulan: "Bidang Kartesius berfungsi sebagai peta atau sistem pemetaan posisi yang presisi menggunakan pasangan angka."
+        },
+        {
+            title: "Bab 8: Pengolahan dan Penyajian Data (Statistika)",
+            short: "Tabel, diagram, serta mean, median, dan modus.",
+            poin: [
+                "Membaca, mengumpulkan, dan menyajikan data dalam bentuk tabel atau diagram (batang, garis, lingkaran).",
+                "Mencari Mean (rata-rata), Median (nilai tengah), dan Modus (nilai yang sering muncul)."
+            ],
+            kesimpulan: "Statistika menyederhanakan sekumpulan data yang rumit menjadi informasi yang mudah dibaca dan dianalisis untuk mengambil keputusan."
+        }
+    ]
+};
+
+/* =========================================================
+   LOGIKA TAB & MATERI
+   ========================================================= */
+let currentGrade = "5";
+
+const tabBtns = document.querySelectorAll('.tab-btn');
+const sections = document.querySelectorAll('.section');
+const gradeBtns = document.querySelectorAll('.grade-btn');
+const babListEl = document.getElementById('babList');
+const materiDetailEl = document.getElementById('materiDetail');
+
+function renderBabList(grade) {
+    const data = materiData[grade] || [];
+    babListEl.innerHTML = '';
+    materiDetailEl.classList.remove('show');
+    materiDetailEl.innerHTML = '';
+
+    data.forEach((bab, index) => {
+        const card = document.createElement('div');
+        card.className = 'bab-card';
+        card.innerHTML = `
+            <div class="bab-title">${bab.title}</div>
+            <div class="bab-desc">${bab.short}</div>
+        `;
+        card.addEventListener('click', () => showMateriDetail(bab, card));
+        babListEl.appendChild(card);
+    });
+}
+
+function showMateriDetail(bab, cardEl) {
+    // highlight kartu aktif
+    document.querySelectorAll('.bab-card').forEach(c => c.style.borderLeftColor = '#4299e1');
+    if (cardEl) cardEl.style.borderLeftColor = '#38a169';
+
+    const listHTML = bab.poin.map(p => `<li>${p}</li>`).join('');
+    materiDetailEl.innerHTML = `
+        <h3>${bab.title}</h3>
+        <ul>${listHTML}</ul>
+        <div class="kesimpulan"><strong>💡 Kesimpulan:</strong> ${bab.kesimpulan}</div>
+    `;
+    materiDetailEl.classList.add('show');
+    materiDetailEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// Tab navigasi
+tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        tabBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        sections.forEach(s => s.classList.remove('active'));
+        document.getElementById(`section-${btn.dataset.tab}`).classList.add('active');
+    });
+});
+
+// Pemilih kelas
+gradeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        gradeBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentGrade = btn.dataset.grade;
+        renderBabList(currentGrade);
+    });
+});
+
+// Inisialisasi materi kelas 5
+renderBabList("5");
+
+/* =========================================================
+   LOGIKA KUIS (Latihan Soal)
+   ========================================================= */
+(function() {
+    let currentOp = '+';
+    let currentA = 3, currentB = 4, correctAnswer = 7;
+    let score = 0, answered = false;
+
+    const questionEl = document.getElementById('questionText');
+    const answerInput = document.getElementById('answerInput');
+    const checkBtn = document.getElementById('checkBtn');
+    const feedbackEl = document.getElementById('feedbackMsg');
+    const nextBtn = document.getElementById('nextBtn');
+    const scoreEl = document.getElementById('scoreDisplay');
+    const opBtns = document.querySelectorAll('.op-btn');
+
+    function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function generateQuestion() {
+        answered = false;
+        answerInput.value = '';
+        answerInput.disabled = false;
+        feedbackEl.textContent = '';
+        feedbackEl.className = 'feedback';
+        nextBtn.disabled = true;
+        checkBtn.disabled = false;
+
+        if (currentOp === '+') {
+            currentA = getRandomInt(0, 9);
+            currentB = getRandomInt(0, 9);
+            while (currentA + currentB > 18) {
+                currentA = getRandomInt(0, 9);
+                currentB = getRandomInt(0, 9);
+            }
+            correctAnswer = currentA + currentB;
+        } else if (currentOp === '-') {
+            currentA = getRandomInt(2, 18);
+            currentB = getRandomInt(0, currentA);
+            correctAnswer = currentA - currentB;
+        } else if (currentOp === '×') {
+            currentA = getRandomInt(1, 5);
+            currentB = getRandomInt(1, 5);
+            correctAnswer = currentA * currentB;
+        } else if (currentOp === '÷') {
+            currentB = getRandomInt(1, 5);
+            correctAnswer = getRandomInt(1, 5);
+            currentA = currentB * correctAnswer;
+        }
+
+        const displayOp = currentOp === '×' ? '×' : (currentOp === '÷' ? '÷' : currentOp);
+        questionEl.textContent = `${currentA} ${displayOp} ${currentB}`;
+        answerInput.focus();
+    }
+
+    function checkAnswer() {
+        if (answered) return;
+        const userAnswer = parseInt(answerInput.value.trim());
+        if (isNaN(userAnswer)) {
+            feedbackEl.textContent = 'Masukkan angka dulu ya!';
+            feedbackEl.className = 'feedback wrong';
+            return;
+        }
+        answered = true;
+        answerInput.disabled = true;
+        checkBtn.disabled = true;
+
+        if (userAnswer === correctAnswer) {
+            feedbackEl.textContent = '✅ Benar! Hebat!';
+            feedbackEl.className = 'feedback correct';
+            score += 10;
+            scoreEl.textContent = `Skor: ${score}`;
+        } else {
+            feedbackEl.textContent = `❌ Salah. Jawaban yang benar adalah ${correctAnswer}.`;
+            feedbackEl.className = 'feedback wrong';
+        }
+        nextBtn.disabled = false;
+        nextBtn.focus();
+    }
+
+    opBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            opBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            currentOp = this.dataset.op;
+            generateQuestion();
+        });
+    });
+
+    checkBtn.addEventListener('click', checkAnswer);
+    answerInput.addEventListener('keypress', e => {
+        if (e.key === 'Enter') { e.preventDefault(); checkAnswer(); }
+    });
+    nextBtn.addEventListener('click', generateQuestion);
+
+    generateQuestion();
+})();
+</script>
+</body>
+</html>
